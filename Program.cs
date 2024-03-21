@@ -98,9 +98,60 @@ public class RentalAgency
     private Vehicle[] Fleet;
     private double TotalRevenue;
 
-    public void rentVehicle()
+    public RentalAgency ()
     {
+        Fleet = new Vehicle[100];
+        TotalRevenue = 0;
+    }
 
+    //add vehicle to fleet, either completely new vehicle or returned from customer
+    public void AddVehicleToFleet(Vehicle vehicle)
+    {
+        for(int i = 0; i < Fleet.Length; i++)
+        {
+            if (Fleet[i] == null)
+            {
+                Fleet[i] = vehicle;
+                break;
+            }
+        }
+    }
+
+    //removing vehicle from the fleet, renting to customer or removing it completely
+    public void RemoveVehicleFromTheFleet(Vehicle vehicle)
+    {
+        for (int i = 0; i < Fleet.Length; i++)
+        {
+            if (Fleet[i] == vehicle)
+            {
+                Fleet[i] = null;
+                break;
+            }
+        }
+    }
+
+    public void RentVehicle(Vehicle vehicle)
+    {
+        TotalRevenue += vehicle.RentalPrice;
+        RemoveVehicleFromTheFleet(vehicle);
+    }
+
+    public void DisplayFleet()
+    {
+        Console.WriteLine("Fleet:");
+        foreach (Vehicle vehicle in Fleet)
+        {
+            if(vehicle != null)
+            {
+                vehicle.DisplayDetails();
+                Console.WriteLine();
+            }
+        }
+    }
+
+    public double GetTotalRevenue()
+    {
+        return TotalRevenue;
     }
 }
 
@@ -109,16 +160,20 @@ class Rent_a_Car
 {
     static void Main(string[] args)
     {
-        Car car = new Car("Escape", "Ford", 2010, 60, 5, "Gasoline", "Automatic", false);
-        car.DisplayDetails();
-        Console.WriteLine();
+        //creating our rental agency
+        RentalAgency rentAvehicle= new RentalAgency();
 
-        Truck truck = new Truck("Escape", "Ford", 2010, 60, 8, "Freightliner", true);
-        truck.DisplayDetails();
-        Console.WriteLine();
+        Car car = new Car("Escape", "Ford", 2010, 60, 5, "Gasoline", "Automatic", false);
+        rentAvehicle.AddVehicleToFleet(car);
+
+        Truck truck = new Truck("EconicSD", "Freightliner", 2018, 60, 2, "Heavy Duty", false);
+        rentAvehicle.AddVehicleToFleet(truck);
 
         Motorcycle moto = new Motorcycle("1998 Ducati 916", "Ducati", 1998, 200, 916, "Gasoline", true);
-        moto.DisplayDetails();
-        Console.WriteLine();
+        rentAvehicle.AddVehicleToFleet(moto);
+
+        rentAvehicle.DisplayFleet();
+
+        Console.WriteLine($"Total Revenue: {rentAvehicle.GetTotalRevenue()}");
     }
 }
