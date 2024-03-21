@@ -95,12 +95,16 @@ public class Motorcycle : Vehicle
 
 public class RentalAgency
 {
-    private Vehicle[] Fleet;
+    private Vehicle[] Fleet { get; set; }
     private double TotalRevenue;
+    //add this to store rented vehicles
+    private List<Vehicle> RentedVehicles;
 
-    public RentalAgency ()
+    public RentalAgency (int capacity)
     {
-        Fleet = new Vehicle[100];
+        Fleet = new Vehicle[capacity];
+        //creating new list to store a vehicle in it
+        RentedVehicles = new List<Vehicle>();
         TotalRevenue = 0;
     }
 
@@ -133,6 +137,7 @@ public class RentalAgency
     public void RentVehicle(Vehicle vehicle)
     {
         TotalRevenue += vehicle.RentalPrice;
+        RentedVehicles.Add(vehicle);
         RemoveVehicleFromTheFleet(vehicle);
     }
 
@@ -153,27 +158,153 @@ public class RentalAgency
     {
         return TotalRevenue;
     }
-}
 
+    //displaying vehicles that we have rented(they not in fleet)
+    // New method to display rented vehicles
+    public void DisplayRentedVehicles()
+    {
+        Console.WriteLine("Rented Vehicles:");
+        foreach (Vehicle vehicle in RentedVehicles)
+        {
+            vehicle.DisplayDetails();
+            Console.WriteLine();
+        }
+        Console.WriteLine();
+    }
+    //to keep security mesures we will retrive list of available vehicles for rent
+    public List<Vehicle> GetAvailableVehicles()
+    {
+        List<Vehicle> availableVehicles = new List<Vehicle>();
+        foreach (Vehicle vehicle in Fleet)
+        {
+            if (vehicle != null && !RentedVehicles.Contains(vehicle))
+            {
+                availableVehicles.Add(vehicle);
+            }
+        }
+        return availableVehicles;
+    }
+    //to make main method look smaller we will be getting choice in here
+    public static int GetValidChoice(int count)
+    {
+        while (true)
+        {
+            Console.Write($"Enter your choice (1-{count}): ");
+            if (!int.TryParse(Console.ReadLine(), out int choice) || choice < 1 || choice > count)
+            {
+                Console.WriteLine("Invalid choice. Please select a valid number.");
+            }
+            else
+            {
+                return choice;
+            }
+        }
+    }
+}
 
 class Rent_a_Car
 {
     static void Main(string[] args)
     {
         //creating our rental agency
-        RentalAgency rentAvehicle= new RentalAgency();
+        RentalAgency rentAvehicle= new RentalAgency(100);
 
-        Car car = new Car("Escape", "Ford", 2010, 60, 5, "Gasoline", "Automatic", false);
-        rentAvehicle.AddVehicleToFleet(car);
+        Car escape = new Car("Escape", "Ford", 2010, 60, 5, "Gasoline", "Automatic", false);
+        rentAvehicle.AddVehicleToFleet(escape);
+        Car camry = new Car("Camry", "Toyota", 2022, 50, 5, "V6", "Automatic", false);
+        rentAvehicle.AddVehicleToFleet(camry);
 
-        Truck truck = new Truck("EconicSD", "Freightliner", 2018, 60, 2, "Heavy Duty", false);
-        rentAvehicle.AddVehicleToFleet(truck);
+        Truck econicSD = new Truck("EconicSD", "Freightliner", 2018, 60, 2, "Heavy Duty", false);
+        rentAvehicle.AddVehicleToFleet(econicSD);
+        Truck f150 = new Truck("F-150", "Ford", 2021, 80, 1000, "Pickup", true);
+        rentAvehicle.AddVehicleToFleet(f150);
 
-        Motorcycle moto = new Motorcycle("1998 Ducati 916", "Ducati", 1998, 200, 916, "Gasoline", true);
-        rentAvehicle.AddVehicleToFleet(moto);
+        Motorcycle ducati916 = new Motorcycle("1998 Ducati 916", "Ducati", 1998, 200, 916, "Gasoline", true);
+        rentAvehicle.AddVehicleToFleet(ducati916);
+        Motorcycle kawasakiNinja = new Motorcycle("Ninja", "Kawasaki", 2023, 40, 600, "Gasoline", true);
+        rentAvehicle.AddVehicleToFleet (kawasakiNinja);
 
-        rentAvehicle.DisplayFleet();
+        /*        rentAvehicle.DisplayFleet();
 
-        Console.WriteLine($"Total Revenue: {rentAvehicle.GetTotalRevenue()}");
+                Console.WriteLine($"Total Revenue: {rentAvehicle.GetTotalRevenue()}");*/
+
+        Console.WriteLine("Rent a vehicle managament system");
+        Console.WriteLine();
+
+        bool RentIsOpen = true;
+
+        while(RentIsOpen)
+        {
+            Console.WriteLine("What you would like to do:");
+            Console.WriteLine();
+            Console.WriteLine("1. See the Fleet stock.");
+            Console.WriteLine("2. Rent a vehicle.");
+            Console.WriteLine("3. Return vehicle to Fleet");
+            Console.WriteLine("4. Add new vehicel");
+            Console.WriteLine("5. See currently rented vehicles");
+            Console.WriteLine("6. Close a store.");
+            Console.WriteLine();
+
+            // Get customer choice
+            Console.Write("Enter your choice (1-6): ");
+
+            // This will prevent the program from crashing if the user enters anything else besides 1-5 (character or any special character)
+            bool validActionInput = int.TryParse(Console.ReadLine(), out int mainMenuChoice);
+
+            if (!validActionInput || mainMenuChoice < 1 || mainMenuChoice > 5)
+            {
+                Console.WriteLine("Invalid input. Please enter a number between 1 and 5.");
+                continue;
+            }
+
+            switch (mainMenuChoice)
+            {
+                case 1:
+                    rentAvehicle.DisplayFleet();
+                    Console.WriteLine($"Total Revenue: {rentAvehicle.GetTotalRevenue()} Cad");
+                    Console.WriteLine();
+                    break;
+                case 2:
+                    RentVehicle(rentAvehicle);
+                    break;
+                case 3: Console.WriteLine("Test 3");
+                    break;
+                case 4: Console.WriteLine("Test 4");
+                    break;
+                case 5:
+                    rentAvehicle.DisplayRentedVehicles();
+                    break;
+                case 6:
+                    RentIsOpen = false;
+                    break;
+            }
+        }
+    }
+
+    private static void RentVehicle(RentalAgency rentalAgency)
+    {
+        Console.WriteLine();
+        Console.WriteLine("Choose a vehicle to rent:");
+
+        var availableVehicles = rentalAgency.GetAvailableVehicles();
+
+        if (availableVehicles.Count == 0)
+        {
+            Console.WriteLine("Currently, there are no vehicles available for rent.");
+            return;
+        }
+
+        for (int i = 0; i < availableVehicles.Count; i++)
+        {
+            Console.WriteLine($"{i + 1}. {availableVehicles[i].Manufacturer} {availableVehicles[i].Model} ({availableVehicles[i].Year})");
+        }
+
+        int choice = RentalAgency.GetValidChoice(availableVehicles.Count);
+
+        // Rent the selected vehicle
+        var vehicleToRent = availableVehicles[choice - 1];
+        rentalAgency.RentVehicle(vehicleToRent);
+        Console.WriteLine($"You have rented the {vehicleToRent.Manufacturer} {vehicleToRent.Model}.");
+        Console.WriteLine();
     }
 }
