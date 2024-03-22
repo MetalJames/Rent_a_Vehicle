@@ -48,7 +48,8 @@ public class RentalAgency
         {
             if (Fleet[i] == vehicle)
             {
-                Fleet[i] = null;
+                //preventing warning, this will not be null
+                Fleet[i] = null!;
                 break;
             }
         }
@@ -61,7 +62,8 @@ public class RentalAgency
         {
             if (RentedVehicles[i] == vehicle)
             {
-                RentedVehicles[i] = null;
+                //preventing warning, this will not be null
+                RentedVehicles[i] = null!;
                 break;
             }
         }
@@ -205,62 +207,144 @@ public class RentalAgency
 
         Console.WriteLine();
         Console.Write("Enter the model: ");
-        string model = Console.ReadLine();
+        //from here preventing errors if user enter empty line
+        string model = Console.ReadLine()!;
+        //check if the input is empty, maybe customer forgot or accidentally press enter
+        while (string.IsNullOrWhiteSpace(model))
+        {
+            Console.WriteLine("Model cannot be empty. Please enter a valid model:");
+            model = Console.ReadLine()!;
+        }
 
         Console.Write("Enter the manufacturer: ");
-        string manufacturer = Console.ReadLine();
+        //from here preventing errors if user enter empty line
+        string manufacturer = Console.ReadLine()!;
+        //check if the input is empty, maybe customer forgot or accidentally press enter
+        while (string.IsNullOrWhiteSpace(manufacturer))
+        {
+            Console.WriteLine("Manufacturer cannot be empty. Please enter a valid manufacturer:");
+            manufacturer = Console.ReadLine()!;
+        }
 
         Console.Write("Enter the year: ");
-        int year = int.Parse(Console.ReadLine());
+        int year;
+        //check if the input is empty, maybe customer forgot or accidentally press enter
+        while (!int.TryParse(Console.ReadLine(), out year) || year < 0)
+        {
+            Console.WriteLine("Invalid input. Please enter a valid year:");
+        }
 
         Console.Write("Enter the rental price: ");
-        double rentalPrice = double.Parse(Console.ReadLine());
+        double rentalPrice;
+        //check if the input is empty, maybe customer forgot or accidentally press enter
+        while (!double.TryParse(Console.ReadLine(), out rentalPrice) || rentalPrice < 0)
+        {
+            Console.WriteLine("Invalid input. Please enter a valid rental price:");
+        }
 
         switch (choice)
         {
             case 1:
                 Console.Write("Enter the number of seats: ");
-                int seats = int.Parse(Console.ReadLine());
+                int seats;
+                //check if the input is empty, maybe customer forgot or accidentally press enter
+                while (!int.TryParse(Console.ReadLine(), out seats) || seats <= 0)
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid number of seats:");
+                }
 
                 Console.Write("Enter the engine type: ");
-                string engineType = Console.ReadLine();
+                string engineType = Console.ReadLine()!;
+                //check if the input is empty, maybe customer forgot or accidentally press enter
+                while (string.IsNullOrWhiteSpace(engineType))
+                {
+                    Console.WriteLine("Engine type cannot be empty. Please enter a valid engine type:");
+                    engineType = Console.ReadLine()!;
+                }
 
                 Console.Write("Enter the transmission type: ");
-                string transmission = Console.ReadLine();
+                string transmission = Console.ReadLine()!;
+                //check if the input is empty, maybe customer forgot or accidentally press enter
+                while (string.IsNullOrWhiteSpace(transmission))
+                {
+                    Console.WriteLine("Transmission type cannot be empty. Please enter a valid transmission type:");
+                    transmission = Console.ReadLine()!;
+                }
 
                 Console.Write("Is it convertible? (yes/no): ");
-                string convertibleInput = Console.ReadLine().ToLower();
-                bool convertible = convertibleInput == "yes" || convertibleInput == "y";
-
+                string convertibleInput = Console.ReadLine()!.ToLower();
+                bool convertible;
+                //check if the input is empty, maybe customer forgot or accidentally press enter
+                while (convertibleInput != "yes" && convertibleInput != "no" && convertibleInput != "y" && convertibleInput != "n")
+                {
+                    Console.WriteLine("Invalid input. Please enter 'yes' or 'no':");
+                    convertibleInput = Console.ReadLine()!.ToLower();
+                }
+                convertible = convertibleInput == "yes" || convertibleInput == "y";
 
                 Car car = new Car(model, manufacturer, year, rentalPrice, seats, engineType, transmission, convertible);
                 AddVehicleToFleet(car);
                 break;
             case 2:
                 Console.Write("Enter the truck capacity(kg): ");
-                double capacity = double.Parse(Console.ReadLine());
+                double capacity;
+                //check if the input is empty, maybe customer forgot or accidentally press enter
+                while (!double.TryParse(Console.ReadLine(), out capacity) || capacity <= 0)
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid truck capacity:");
+                }
 
                 Console.Write("Enter the truck type: ");
-                string truckType = Console.ReadLine();
+                //check if the input is empty, maybe customer forgot or accidentally press enter
+                string truckType = Console.ReadLine()!;
+                while (string.IsNullOrWhiteSpace(truckType))
+                {
+                    Console.WriteLine("Truck type cannot be empty. Please enter a valid truck type:");
+                    truckType = Console.ReadLine()!;
+                }
 
                 Console.Write("Is it four-wheel drive? (yes/no): ");
-                string fourWheelDriveInput = Console.ReadLine().ToLower();
-                bool fourWheelDrive = fourWheelDriveInput == "yes" || fourWheelDriveInput == "y";
-
+                string fourWheelDriveInput = Console.ReadLine()!.ToLower();
+                bool fourWheelDrive;
+                //check if the input is empty, maybe customer forgot or accidentally press enter
+                while (fourWheelDriveInput != "yes" && fourWheelDriveInput != "no" && fourWheelDriveInput != "y" && fourWheelDriveInput != "n")
+                {
+                    Console.WriteLine("Invalid input. Please enter 'yes' or 'no':");
+                    fourWheelDriveInput = Console.ReadLine()!.ToLower();
+                }
+                fourWheelDrive = fourWheelDriveInput == "yes" || fourWheelDriveInput == "y";
 
                 Truck truck = new Truck(model, manufacturer, year, rentalPrice, capacity, truckType, fourWheelDrive);
                 AddVehicleToFleet(truck);
                 break;
             case 3:
                 Console.Write("Enter the engine capacity: ");
-                double engineCapacity = double.Parse(Console.ReadLine());
+                double engineCapacity;
+                //check if the input is empty, maybe customer forgot or accidentally press enter
+                while (!double.TryParse(Console.ReadLine(), out engineCapacity) || engineCapacity <= 0)
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid engine capacity:");
+                }
 
                 Console.Write("Enter the fuel type: ");
-                string fuelType = Console.ReadLine();
+                string fuelType = Console.ReadLine()!;
+                //check if the input is empty, maybe customer forgot or accidentally press enter
+                while (string.IsNullOrWhiteSpace(fuelType))
+                {
+                    Console.WriteLine("Fuel type cannot be empty. Please enter a valid fuel type:");
+                    fuelType = Console.ReadLine()!;
+                }
 
                 Console.Write("Does it have a fairing? (yes/no): ");
-                string fairingInput = Console.ReadLine().ToLower();
-                bool hasFairing = fairingInput == "yes" || fairingInput == "y";
+                string fairingInput = Console.ReadLine()!.ToLower();
+                bool hasFairing;
+                //check if the input is empty, maybe customer forgot or accidentally press enter
+                while (fairingInput != "yes" && fairingInput != "no" && fairingInput != "y" && fairingInput != "n")
+                {
+                    Console.WriteLine("Invalid input. Please enter 'yes' or 'no':");
+                    fairingInput = Console.ReadLine()!.ToLower();
+                }
+                hasFairing = fairingInput == "yes" || fairingInput == "y";
 
                 Motorcycle motorcycle = new Motorcycle(model, manufacturer, year, rentalPrice, engineCapacity, fuelType, hasFairing);
                 AddVehicleToFleet(motorcycle);
