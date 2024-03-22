@@ -1,379 +1,4 @@
-﻿//vehicle abstract class
-public abstract class Vehicle
-{
-    public string Model { get; private set; }
-    public string Manufacturer { get; private set; }
-    public int Year { get; private set; }
-
-    //private field for RentalPrice
-    private double rentalPrice;
-
-    //public property for RentalPrice
-    public double RentalPrice
-    {
-        get { return rentalPrice; }
-        set { rentalPrice = value; }
-    }
-
-    public Vehicle (string model, string manufacturer, int year, double rentalPrice)
-    {
-        Model = model;
-        Manufacturer = manufacturer;
-        Year = year;
-        RentalPrice = rentalPrice;
-    }
-
-    public virtual void DisplayDetails()
-    {
-        Console.WriteLine($"Model: {Model}");
-        Console.WriteLine($"Manufacturer: {Manufacturer}");
-        Console.WriteLine($"Year: {Year}");
-        Console.WriteLine($"Rental Price: {RentalPrice}");
-    }
-}
-
-//car class
-public class Car : Vehicle
-{
-    public int Seats { get; private set; }
-    public string EngineType { get; private set; }
-    public string Transmission {  get; private set; }
-    public bool Convertible { get; private set; }
-
-    public Car (string model, string manufacturer, int year, double rentalPrice, int seats, string engineType, string transmission, bool convertible) : base(model, manufacturer, year, rentalPrice)
-    {
-        Seats = seats;
-        EngineType = engineType;
-        Transmission = transmission;
-        Convertible = convertible;
-    }
-
-    public override void DisplayDetails()
-    {
-        base.DisplayDetails();
-        Console.WriteLine($"Seats: {Seats}");
-        Console.WriteLine($"EngineType: {EngineType}");
-        Console.WriteLine($"Transmission: {Transmission}");
-        Console.WriteLine($"Convertible: {(Convertible ? "Yes" : "No")}");
-    }
-}
-
-//truck class
-public class Truck : Vehicle
-{
-    public int Capasity { get; private set; }
-    public string TruckType { get; private set; }
-    public bool FourWheelDrive { get; private set; }
-
-    public Truck(string model, string manufacturer, int year, double rentalPrice, 
-        int capacity, string trucktype, bool fourwheel) : base(model, manufacturer, year, rentalPrice)
-    {
-        Capasity = capacity;
-        TruckType = trucktype;
-        FourWheelDrive = fourwheel;
-    }
-
-    public override void DisplayDetails()
-    {
-        base.DisplayDetails();
-        Console.WriteLine($"Capasity: {Capasity}");
-        Console.WriteLine($"Truck Type: {TruckType}");
-        Console.WriteLine($"FourWheel Drive: {(FourWheelDrive ? "Yes" : "No")}");
-    }
-}
-
-//motorcycle class
-public class Motorcycle : Vehicle
-{
-    public int EngineCapacity { get; private set; }
-    public string FuelType { get; private set; }
-    public bool HasFairing { get; private set; }
-
-    public Motorcycle(string model, string manufacturer, int year, double rentalPrice,
-        int enginecapacity, string fueltype, bool hasfairing) : base(model, manufacturer, year, rentalPrice)
-    {
-        EngineCapacity = enginecapacity;
-        FuelType = fueltype;
-        HasFairing = hasfairing;
-    }
-
-    public override void DisplayDetails()
-    {
-        base.DisplayDetails();
-        Console.WriteLine($"Engine Type: {EngineCapacity} cc");
-        Console.WriteLine($"Fuel Type: {FuelType}");
-        Console.WriteLine($"Has Fairing: {(HasFairing ? "Yes" : "No")}");
-    }
-}
-
-//rental agency class
-public class RentalAgency
-{
-    private Vehicle[] Fleet { get; set; }
-    private double TotalRevenue;
-    //add this to store rented vehicles
-    private Vehicle[] RentedVehicles { get; set; }
-
-    public RentalAgency (int capacity)
-    {
-        Fleet = new Vehicle[capacity];
-        //creating new array to store a vehicle in it
-        RentedVehicles = new Vehicle[capacity];
-        TotalRevenue = 0;
-    }
-
-    //add vehicle to fleet
-    public void AddVehicleToFleet(Vehicle vehicle)
-    {
-        for(int i = 0; i < Fleet.Length; i++)
-        {
-            if (Fleet[i] == null)
-            {
-                Fleet[i] = vehicle;
-                break;
-            }
-        }
-    }
-
-    //add vehicle to rented
-    public void AddVehicleToRented(Vehicle vehicle)
-    {
-        for (int i = 0; i < RentedVehicles.Length; i++)
-        {
-            if (RentedVehicles[i] == null)
-            {
-                RentedVehicles[i] = vehicle;
-                break;
-            }
-        }
-    }
-
-    //removing vehicle from the fleet
-    public void RemoveVehicleFromTheFleet(Vehicle vehicle)
-    {
-        for (int i = 0; i < Fleet.Length; i++)
-        {
-            if (Fleet[i] == vehicle)
-            {
-                Fleet[i] = null;
-                break;
-            }
-        }
-    }
-
-    //removing vehicle from the rented
-    public void RemoveVehicleFromRented(Vehicle vehicle)
-    {
-        for (int i = 0; i < RentedVehicles.Length; i++)
-        {
-            if (RentedVehicles[i] == vehicle)
-            {
-                RentedVehicles[i] = null;
-                break;
-            }
-        }
-    }
-
-    //renting vehicle
-    public void RentVehicle(Vehicle vehicle)
-    {
-        TotalRevenue += vehicle.RentalPrice;
-        AddVehicleToRented(vehicle);
-        RemoveVehicleFromTheFleet(vehicle);
-    }
-
-    //display fleet
-    public void DisplayFleet()
-    {
-        Console.WriteLine("Fleet:");
-        Console.WriteLine();
-        foreach (Vehicle vehicle in Fleet)
-        {
-            if(vehicle != null)
-            {
-                vehicle.DisplayDetails();
-                Console.WriteLine();
-            }
-        }
-    }
-
-    //get total revenue
-    public double GetTotalRevenue()
-    {
-        return TotalRevenue;
-    }
-
-    //displaying vehicles that we have rented(they not in fleet)
-    //new method to display rented vehicles
-    public void DisplayRentedVehicles()
-    {
-        List<Vehicle> rentedVehicles = GetRentedVehicles();
-
-        if (rentedVehicles.Count == 0)
-        {
-            Console.WriteLine();
-            Console.WriteLine("There are no rented vehicles.");
-        }
-        else
-        {
-            Console.WriteLine("Rented Vehicles:");
-            Console.WriteLine();
-            foreach (Vehicle vehicle in rentedVehicles)
-            {
-                if (vehicle != null)
-                {
-                    vehicle.DisplayDetails();
-                    Console.WriteLine();
-                }
-            }
-        }
-        Console.WriteLine();
-    }
-
-    //to keep security mesures we will retrive list of available vehicles for rent
-    public List<Vehicle> GetAvailableVehicles()
-    {
-        List<Vehicle> availableVehicles = new List<Vehicle>();
-        foreach (Vehicle vehicle in Fleet)
-        {
-            if (vehicle != null && !RentedVehicles.Contains(vehicle))
-            {
-                availableVehicles.Add(vehicle);
-            }
-        }
-        return availableVehicles;
-    }
-
-    //getting list of rented vehicles
-    public List<Vehicle> GetRentedVehicles()
-    {
-        List<Vehicle> rentedVehicles = new List<Vehicle>();
-        foreach (Vehicle vehicle in RentedVehicles)
-        {
-            if (vehicle != null && !Fleet.Contains(vehicle))
-            {
-                rentedVehicles.Add(vehicle);
-            }
-        }
-        return rentedVehicles;
-    }
-
-    //to make main method look smaller we will be getting choice in here
-    public static int GetValidChoice(int count)
-    {
-        while (true)
-        {
-            Console.Write($"Enter your choice (0-{count}): ");
-            Console.WriteLine();
-            if (!int.TryParse(Console.ReadLine(), out int choice) || choice < 0 || choice > count)
-            {
-                Console.WriteLine("Invalid choice. Please select a valid number.");
-            }
-            else
-            {
-                return choice;
-            }
-        }
-    }
-
-    //add completely new vehicle to our fleet
-    public void AddNewVehicle()
-    {
-        Console.WriteLine("Select the type of vehicle you whould like to add:");
-        Console.WriteLine();
-        Console.WriteLine("1. Car");
-        Console.WriteLine("2. Truck");
-        Console.WriteLine("3. Motorcycle");
-        Console.WriteLine("0. Back to Main Menu");
-        Console.WriteLine();
-
-        int choice = GetValidChoice(3);
-
-        if (choice == 0)
-            return;
-
-        string vehicleType = "";
-
-        switch (choice)
-        {
-            case 1:
-                vehicleType = "Car";
-                break;
-            case 2:
-                vehicleType = "Truck";
-                break;
-            case 3:
-                vehicleType = "Motorcycle";
-                break;
-        }
-
-        Console.WriteLine();
-        Console.WriteLine($"You are adding {vehicleType}");
-
-        Console.WriteLine();
-        Console.WriteLine("Enter the model: ");
-        string model = Console.ReadLine();
-
-        Console.WriteLine("Enter the manufacturer: ");
-        string manufacturer = Console.ReadLine();
-
-        Console.WriteLine("Enter the year: ");
-        int year = int.Parse(Console.ReadLine());
-
-        Console.WriteLine("Enter the rental price: ");
-        double rentalPrice = double.Parse(Console.ReadLine());
-
-        switch (choice)
-        {
-            case 1:
-                Console.WriteLine("Enter the number of seats: ");
-                int seats = int.Parse(Console.ReadLine());
-
-                Console.WriteLine("Enter the engine type: ");
-                string engineType = Console.ReadLine();
-
-                Console.WriteLine("Enter the transmission type: ");
-                string transmission = Console.ReadLine();
-
-                Console.WriteLine("Is it convertible? (true/false): ");
-                bool convertible = bool.Parse(Console.ReadLine());
-
-                Car car = new Car(model, manufacturer, year, rentalPrice, seats, engineType, transmission, convertible);
-                AddVehicleToFleet(car);
-                break;
-            case 2:
-                Console.WriteLine("Enter the capacity: ");
-                int capacity = int.Parse(Console.ReadLine());
-
-                Console.WriteLine("Enter the truck type: ");
-                string truckType = Console.ReadLine();
-
-                Console.WriteLine("Is it four-wheel drive? (true/false): ");
-                bool fourWheelDrive = bool.Parse(Console.ReadLine());
-
-                Truck truck = new Truck(model, manufacturer, year, rentalPrice, capacity, truckType, fourWheelDrive);
-                AddVehicleToFleet(truck);
-                break;
-            case 3:
-                Console.WriteLine("Enter the engine capacity: ");
-                int engineCapacity = int.Parse(Console.ReadLine());
-
-                Console.WriteLine("Enter the fuel type: ");
-                string fuelType = Console.ReadLine();
-
-                Console.WriteLine("Does it have a fairing? (yes/no): ");
-                string fairingInput = Console.ReadLine().ToLower();
-                bool hasFairing = fairingInput == "yes" || fairingInput == "y";
-
-                Motorcycle motorcycle = new Motorcycle(model, manufacturer, year, rentalPrice, engineCapacity, fuelType, hasFairing);
-                AddVehicleToFleet(motorcycle);
-                break;
-        }
-        Console.WriteLine("Vehicle added successfully!");
-    }
-}
-
-class Rent_a_Car
+﻿class Rent_a_Car
 {
     static void Main(string[] args)
     {
@@ -431,7 +56,6 @@ class Rent_a_Car
                     rentAvehicle.DisplayFleet();
                     Console.WriteLine($"Total Revenue: {rentAvehicle.GetTotalRevenue()} Cad");
                     Console.WriteLine("--------------------------------------------------");
-                    Console.WriteLine();
                     break;
                 case 2:
                     Console.WriteLine("--------------------------------------------------");
@@ -463,7 +87,6 @@ class Rent_a_Car
     //method to provide choice of renting vehicles
     private static void RentVehicle(RentalAgency rentalAgency)
     {
-        Console.WriteLine();
         Console.WriteLine("Choose a vehicle to rent:");
         Console.WriteLine();
 
@@ -492,19 +115,18 @@ class Rent_a_Car
         //rent the selected vehicle
         var vehicleToRent = availableVehicles[choice - 1];
         rentalAgency.RentVehicle(vehicleToRent);
-        Console.WriteLine($"You have rented the {vehicleToRent.Manufacturer} {vehicleToRent.Model}.");
         Console.WriteLine();
+        Console.WriteLine($"You have rented the {vehicleToRent.Manufacturer} {vehicleToRent.Model}.");
     }
 
     //method to provide choice of returning vehicles
     private static void ReturnVehicle(RentalAgency rentalAgency)
     {
-        Console.WriteLine();
-
         var rentedVehicles = rentalAgency.GetRentedVehicles();
 
         if (rentedVehicles.Count == 0)
         {
+            Console.WriteLine();
             Console.WriteLine("You have not rented any vehicles.");
             Console.WriteLine();
             return;
@@ -532,7 +154,7 @@ class Rent_a_Car
         var vehicleToReturn = rentedVehicles[choice - 1];
         rentalAgency.RemoveVehicleFromRented(vehicleToReturn);
         rentalAgency.AddVehicleToFleet(vehicleToReturn);
-        Console.WriteLine($"You have returned the {vehicleToReturn.Manufacturer} {vehicleToReturn.Model}.");
         Console.WriteLine();
+        Console.WriteLine($"You have returned the {vehicleToReturn.Manufacturer} {vehicleToReturn.Model}.");
     }
 }
