@@ -55,6 +55,7 @@
                     Console.WriteLine("--------------------------------------------------");
                     rentAvehicle.DisplayFleet();
                     Console.WriteLine($"Total Revenue: {rentAvehicle.GetTotalRevenue()} Cad");
+                    Console.WriteLine($"Total vehicles available: {rentAvehicle.GetAvailableVehicles().Count}");
                     Console.WriteLine("--------------------------------------------------");
                     break;
                 case 2:
@@ -87,17 +88,19 @@
     //method to provide choice of renting vehicles
     private static void RentVehicle(RentalAgency rentalAgency)
     {
-        Console.WriteLine("Choose a vehicle to rent:");
-        Console.WriteLine();
 
         var availableVehicles = rentalAgency.GetAvailableVehicles();
 
         if (availableVehicles.Count == 0)
         {
+            Console.WriteLine();
             Console.WriteLine("Currently, there are no vehicles available for rent.");
             Console.WriteLine();
             return;
         }
+
+        Console.WriteLine("Choose a vehicle to rent:");
+        Console.WriteLine();
 
         for (int i = 0; i < availableVehicles.Count; i++)
         {
