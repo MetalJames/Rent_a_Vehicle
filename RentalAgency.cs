@@ -237,8 +237,8 @@ public class RentalAgency
                 AddVehicleToFleet(car);
                 break;
             case 2:
-                Console.Write("Enter the capacity: ");
-                int capacity = int.Parse(Console.ReadLine());
+                Console.Write("Enter the truck capacity(kg): ");
+                double capacity = double.Parse(Console.ReadLine());
 
                 Console.Write("Enter the truck type: ");
                 string truckType = Console.ReadLine();
@@ -253,7 +253,7 @@ public class RentalAgency
                 break;
             case 3:
                 Console.Write("Enter the engine capacity: ");
-                int engineCapacity = int.Parse(Console.ReadLine());
+                double engineCapacity = double.Parse(Console.ReadLine());
 
                 Console.Write("Enter the fuel type: ");
                 string fuelType = Console.ReadLine();

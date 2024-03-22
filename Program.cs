@@ -10,7 +10,7 @@
         Car camry = new Car("Camry", "Toyota", 2022, 50, 5, "V6", "Automatic", false);
         rentAvehicle.AddVehicleToFleet(camry);
 
-        Truck econicSD = new Truck("EconicSD", "Freightliner", 2018, 60, 2, "Heavy Duty", false);
+        Truck econicSD = new Truck("EconicSD", "Freightliner", 2018, 60, 8000, "Heavy Duty", false);
         rentAvehicle.AddVehicleToFleet(econicSD);
         Truck f150 = new Truck("F-150", "Ford", 2021, 80, 1000, "Pickup", true);
         rentAvehicle.AddVehicleToFleet(f150);
